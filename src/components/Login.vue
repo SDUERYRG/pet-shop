@@ -1,36 +1,41 @@
 <template>
+      <div class="container">
   <div class="loginCard">
     <ElInput class=loginInput v-model="account" placeholder="请输入账号" />
     <ElInput class=loginInput type=password v-model="password" placeholder="请输入密码" />
     <ElButton class=loginButton type="primary" @click="login()">登录</ElButton>
   </div>
+</div>
 </template>
 
 
 <script lang="ts">
 import { ref } from 'vue';
 import { ElInput,ElButton } from 'element-plus';
-
+import {useRouter} from 'vue-router';
 const account = ref('');
 const password = ref('');
 
 export default {
   name: 'Login',
-  amount(){
+  setup() {
+    const router = useRouter();
+    const account = ref('');
+    const password = ref('');
 
-  },
-  data(){
+    const login = () => {
+      console.log(account.value, password.value);
+      console.log(router);
+      router.push('/home');
+    };
+    
+
     return {
       account,
       password,
-      
-    }
+      login
+    };
   },
-  methods:{
-    login(){
-      console.log(this.account,this.password)
-    }
-  }
 }
 </script>
 

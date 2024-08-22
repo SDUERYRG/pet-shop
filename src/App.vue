@@ -11,7 +11,10 @@ export default {
 
 <template>
   <div id="app">
-    <RouterView></RouterView>
+
+      <RouterView></RouterView>
+
+    
   </div>
 </template>
 
