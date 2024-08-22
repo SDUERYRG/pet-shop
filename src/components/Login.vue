@@ -1,5 +1,4 @@
 <template>
-
   <div class="loginCard">
     <ElInput class=loginInput v-model="account" placeholder="请输入账号" />
     <ElInput class=loginInput type=password v-model="password" placeholder="请输入密码" />
@@ -11,14 +10,20 @@
 <script lang="ts">
 import { ref } from 'vue';
 import { ElInput,ElButton } from 'element-plus';
+
 const account = ref('');
 const password = ref('');
 
 export default {
+  name: 'Login',
+  amount(){
+
+  },
   data(){
     return {
       account,
-      password
+      password,
+      
     }
   },
   methods:{

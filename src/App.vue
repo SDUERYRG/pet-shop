@@ -1,9 +1,18 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import Login from './components/Login.vue'
+import RouterView from 'vue-router'
+export default {
+
+  components: {
+    Login
+  }
+}
 </script>
 
 <template>
-  <HelloWorld/>
+  <div id="app">
+    <RouterView></RouterView>
+  </div>
 </template>
 
 <style scoped>
