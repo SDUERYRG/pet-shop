@@ -71,7 +71,6 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { User } from '../models/User';
 import { ElButton, ElDialog, ElInput } from 'element-plus';
-
 export default {
   name: 'User',
   setup() {
@@ -87,6 +86,7 @@ export default {
     const dialogVisible = ref(false);
     const dialogTitle = ref('');
     const isEditMode = ref(false);
+    const file = ref<File | null>(null);
 
     const fetchUsers = async () => {
       try {
@@ -143,6 +143,7 @@ export default {
       try {
         const response = await axios.delete(`http://localhost:4001/diary-server/${userId}`);
         console.log('response:', response.data);
+        alert(response.data.message);
         fetchUsers();
       } catch (error) {
         console.error('删除用户失败:', error);
@@ -203,6 +204,7 @@ export default {
           power: power.value,
           email: email.value,
           sex: sex.value,
+          txPicture: 'photo'+(users.value.length + 1).toString()+'.jpg',
         });
         alert(response.data.message);
         fetchUsers();
@@ -220,7 +222,6 @@ export default {
       dialogVisible.value = false;
       clear();
     };
-
     onMounted(() => {
       fetchUsers();
     });
@@ -246,6 +247,7 @@ export default {
       dialogVisible,
       dialogTitle,
       handleConfirm,
+      file
     };
   },
   data() {

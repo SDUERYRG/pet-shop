@@ -13,7 +13,7 @@
       <div style="width: 30%;display: flex;flex-direction: row;">
         <ElInput v-model="searchKey" placeholder="请输入搜索关键字" clearable />
         <ElButton type="primary" @click="preSearch()">搜索</ElButton>
-        <ElButton type="success" >添加</ElButton>
+        <ElButton type="success" @click="showAddDialog();dialogVisible=true">添加</ElButton>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
 
   <ElDialog @close="dialogVisible = false"
             v-model="dialogVisible"
-            title="修改商品信息"
+            :title="dialogTitle"
             width="500">
       <ElForm label-width="80px">
         <ElFormItem label="商品名称">
@@ -47,6 +47,7 @@
         </ElFormItem>
         <ElFormItem label="图片">
           <ElInput v-model="picture"/>
+            <input type="file" @change="handleFileUpload" />
         </ElFormItem>
         <ElFormItem label="库存">
           <ElInput v-model="stock"/>
@@ -69,7 +70,7 @@
       </ElForm>
       <div style="display: flex; justify-content: center; padding: 10px;">
         <ElButton @click="dialogVisible = false; clear()">取消</ElButton>
-        <ElButton type="primary" @click="dialogVisible = false; clear()">确认</ElButton>
+        <ElButton type="primary" @click="dialogVisible = false;handleConfirm();clear()">确认</ElButton>
       </div>
   </ElDialog>
 </template>
@@ -95,7 +96,9 @@ export default {
   const score = ref<number>(0.0);
   const itemId = ref('');
   const dialogVisible = ref(false);
-
+  const dialogTitle = ref('');
+  const file = ref<File | null>(null);
+  const isEditMode = ref(false);
   const fetchItems = async () => {
       try {
           const response = await axios.get('http://localhost:4001/diary-server/item/1/10');
@@ -162,6 +165,7 @@ export default {
   };
 
   const showDialog = (item: Item) => {
+      isEditMode.value = true;
       itemName.value = item.itemName;
       picture.value = item.picture;
       stock.value = item.stock;
@@ -171,6 +175,24 @@ export default {
       discount.value = item.discount;
       score.value = item.score;
       itemId.value = item.itemId;
+      dialogTitle.value = '修改商品信息';
+      dialogVisible.value = true;
+      console.log('itemName:', itemName.value);
+      console.log('picture:', picture.value);
+      console.log('stock:', stock.value);
+      console.log('description:', description.value);
+      console.log('sell:', sell.value);
+      console.log('price:', price.value);
+      console.log('discount:', discount.value);
+      console.log('score:', score.value);
+      console.log('itemId:', itemId.value);
+      
+      
+  };
+
+  const showAddDialog = () => {
+      clear();
+      dialogTitle.value = '添加商品';
       dialogVisible.value = true;
   };
 
@@ -184,9 +206,84 @@ export default {
       discount.value = 0;
       score.value = 0;
   };
-  const updateItem = async () => {
 
+  const updateItem = async () => {
+  try {
+    const formData = new FormData();
+    formData.append('itemName', itemName.value);
+    formData.append('picture', picture.value);
+    formData.append('stock', stock.value.toString());
+    formData.append('description', description.value);
+    formData.append('sell', sell.value.toString());
+    formData.append('price', price.value.toString());
+    formData.append('discount', discount.value.toString());
+    formData.append('score', score.value.toString());
+    formData.append('itemId', itemId.value);
+    if (file.value) {
+      formData.append('file', file.value);
+    }
+
+    const response = await axios.put('http://localhost:4001/diary-server/item/updateItem', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    fetchItems();
+    alert(response.data.message);
+  } catch (error) {
+    console.error('更新商品失败:', error);
+  }
+};
+  const addItem = () => {
+    try {
+      const formData = new FormData();
+      formData.append('itemName', itemName.value);
+      formData.append('picture', picture.value);
+      formData.append('stock', stock.value.toString());
+      formData.append('description', description.value);
+      formData.append('sell', sell.value.toString());
+      formData.append('price', price.value.toString());
+      formData.append('discount', discount.value.toString());
+      formData.append('score', score.value.toString());
+      formData.append('itemId', (items.value.length + 1).toString());
+      if (file.value) {
+        formData.append('file', file.value);
+      }
+
+      axios.post('http://localhost:4001/diary-server/item', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then((response) => {
+        alert(response.data.message);
+        fetchItems();
+      }).catch((error) => {
+        console.error('添加商品失败:', error);
+      });
+    } catch (error) {
+      console.error('添加商品失败:', error);
+    }
   };
+  const handleConfirm = () => {
+      if (isEditMode.value) {
+        console.log('更新')
+        updateItem();
+      } else {
+        console.log('添加')
+        addItem();
+      }
+      dialogVisible.value = false;
+      clear();
+    };
+  const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    file.value = target.files[0];
+  }
+  console.log('file:', file);
+  };
+
+  
 
   onMounted(() => {
       fetchItems();
@@ -199,6 +296,7 @@ export default {
       searchItems,
       preSearch,
       showDialog,
+      showAddDialog,
       itemName,
       picture,
       stock,
@@ -210,13 +308,22 @@ export default {
       itemId,
       clear,
       dialogVisible,
+      dialogTitle,
       updateItem,
+      file,
+      handleFileUpload,
+      handleConfirm,
+      isEditMode,
+      addItem,
   };
 },
 data() {
   return {
     dialogVisible: false,
+    dialogTitle: '',
+    file: null,
   }
-}
+},
+
 }
 </script>
