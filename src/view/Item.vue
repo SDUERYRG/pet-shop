@@ -95,7 +95,6 @@ export default {
   const discount = ref<number>(0.0);
   const score = ref<number>(0.0);
   const itemId = ref('');
-  const dialogVisible = ref(false);
   const dialogTitle = ref('');
   const file = ref<File | null>(null);
   const isEditMode = ref(false);
@@ -176,7 +175,6 @@ export default {
       score.value = item.score;
       itemId.value = item.itemId;
       dialogTitle.value = '修改商品信息';
-      dialogVisible.value = true;
       console.log('itemName:', itemName.value);
       console.log('picture:', picture.value);
       console.log('stock:', stock.value);
@@ -193,7 +191,6 @@ export default {
   const showAddDialog = () => {
       clear();
       dialogTitle.value = '添加商品';
-      dialogVisible.value = true;
   };
 
   const clear = () => {
@@ -272,7 +269,6 @@ export default {
         console.log('添加')
         addItem();
       }
-      dialogVisible.value = false;
       clear();
     };
   const handleFileUpload = (event: Event) => {
@@ -307,7 +303,6 @@ export default {
       score,
       itemId,
       clear,
-      dialogVisible,
       dialogTitle,
       updateItem,
       file,
