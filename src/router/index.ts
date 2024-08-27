@@ -1,5 +1,4 @@
 // Composables
-
 import { createRouter, createWebHistory } from "vue-router";
 //路由表
 const routes = [
@@ -13,6 +12,17 @@ const routes = [
     path: "/Login",
     name: "Login",
     component: () => import("../components/Login.vue"),
+  },
+  //用户主页面
+  {
+    path: "/UserLogin",
+    name: "UserLogin",
+    component: () => import("../components/UserLogin.vue"),
+  },
+  {
+    path: "/UserHome",
+    name: "UserHome",
+    component: () => import("../components/UserHome.vue"),
   },
   {
     path: "/Home",
