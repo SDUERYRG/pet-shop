@@ -26,4 +26,16 @@ export class ShoppingCart {
     this.quantity = quantity;
     this.price = price;
   }
+
+  static fromJson(json: { [key: string]: any }): ShoppingCart {
+    return new ShoppingCart(
+      json['cartId'],
+      json['itemId'],
+      json['userId'],
+      json['itemName'],
+      json['userName'],
+      json['quantity'],
+      parseFloat(json['price']),
+    );
+  }
 }

@@ -35,6 +35,9 @@ setup() {
         console.log('登录成功，token:', token);
         // 你可以将 token 存储在本地存储或 Vuex 中
         localStorage.setItem('token', token);
+        localStorage.setItem('userId', response.data.data.userId);
+        console.log('userId:', response.data.data.userId);
+        
         await router.push('/UserHome');
       } else {
         // 登录失败，处理错误信息

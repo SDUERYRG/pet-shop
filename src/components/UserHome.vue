@@ -1,8 +1,12 @@
 <template>
+    <router-view></router-view>
     <div class="header">
-        <ElButton type="text">商城首页</ElButton>
-        <ElButton type="text">购物车</ElButton>
-        <ElButton type="text">我的订单</ElButton>
+        <ElButton type="text" @click="goToHome">商城首页</ElButton>
+        <ElButton type="text" @click="goToCart">购物车</ElButton>
+        <ElButton type="text" @click="goToOrder">我的订单</ElButton>
+        <div style="width: 90%;height: 30px;display: flex;flex-direction: row;justify-content: right;">
+            <ElButton type="text" @click="logout">退出登录</ElButton>
+        </div>
     </div>
     <div class="search">
         <ElInput class="custom-input" placeholder="请输入宠物名称" style="width: 20%;height: 50px;border-radius: 0;"></ElInput>
@@ -54,11 +58,13 @@
 import { Item } from '../models/Item';
 import { onMounted, ref, computed } from 'vue';
 import axios from 'axios';
+import {useRouter} from 'vue-router';
 
 export default {
     name: 'UserHome',
     setup() {
         const items = ref<Item[]>([]);
+        const router = useRouter();
         const fetchItems = async () => {
       try {
           const response = await axios.get('http://localhost:4001/diary-server/item/1/10');
@@ -87,13 +93,40 @@ export default {
             }
             return rows;
         });
+
+        const goToCart = () => {
+            router.push('/UserCart');
+        }
+        const goToOrder = () => {
+            router.push('/UserOrder');
+        }
+        const goToHome = () => {
+            router.push('/UserHome');
+        }
+        const logout = async () => {
+            const response = await axios.get('http://localhost:4001/diary-server/logout', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': localStorage.getItem('token'),
+                },
+            });
+            console.log('response:', response.status);
+            if (response.status === 200) {
+                localStorage.removeItem('token');
+                router.push('/UserLogin');
+            }
+        }
         onMounted(() => {
             fetchItems();
         });
         return {
             items,
             fetchItems,
-            groupedItems
+            groupedItems,
+            goToCart,
+            goToOrder,
+            goToHome,
+            logout
         };
     },
 }
@@ -132,7 +165,7 @@ export default {
     justify-content: center; /* 水平方向居中 */
 }
 .image {
-    background-color: darkorchid;
+    /* background-color: darkorchid; */
     width: 600px;
     height: 300px;
 }
