@@ -9,6 +9,18 @@
         </div>
     </div>
     <div class="rootdiv">
+      <div class="fixed-div">
+        <div style="width: 20px;"></div>
+          <div style="display: flex;flex-direction: column;">
+            <ElCheckbox @change="selectAll(all)" v-model="all" style="margin-top: 9px;"/>
+          </div>
+          <h4 style="margin-top: 13px;margin-bottom: 0px;">全选</h4>
+          <div style="width: 400px;"></div>
+          <h4 style="margin-top: 13px;margin-bottom: 0px;">已选择{{ selectNum }}件商品</h4>
+          <div style="width: 20px;"></div>
+          <h4 style="margin-top: 13px;margin-bottom: 0px;">合计：￥{{ total }}</h4>
+          <ElButton type="primary" @click="pay">结算</ElButton>
+      </div>
         <div class="usermain">
             <div class="headdiv">
                 <h1>购物车</h1>
@@ -51,7 +63,7 @@
                         ￥{{ item.price }}
                     </div>
                     <div style="width: 80px;height: 150px;display: flex;justify-content: center;flex-direction: column;">
-                        <ElButton type="text">删除</ElButton>
+                        <ElButton type="text" @click="deleteItem(item.itemId,item.userId)">删除</ElButton>
                     </div>
                 </div>
             </div>
@@ -65,6 +77,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { ElCheckbox } from 'element-plus';
 import { ShoppingCart } from '../models/ShoppingCart';
+import { Address } from '../models/Address';
 
 export default {
   name: 'UserCart',
@@ -74,7 +87,9 @@ export default {
     const cartItems = ref<ShoppingCart[]>([]);
     const selectedItems = ref<boolean[]>([]);
     const all = ref<boolean>(false); // 全选状态
-
+    const prices = ref<number[]>([]);
+    const address = ref<Address[]>([]);
+    const itemIdList = ref<String[]>([]);
     const goToCart = () => {
       router.push('/UserCart');
     };
@@ -107,6 +122,7 @@ export default {
       if (response.status === 200) {
         cartItems.value = response.data.data.records;
         initSelected();
+        prices.value = cartItems.value.map((item) => item.price);
       }
     };
 
@@ -125,8 +141,80 @@ export default {
       all.value=selectedItems.value.every((item) => item === true);
     });
 
+    const total = computed(() => {
+      return selectedItems.value.reduce((sum, isSelected, index) => {
+        return isSelected ? sum + prices.value[index] : sum;
+      }, 0);
+    });
+
+    const selectNum = computed(() => {
+      return selectedItems.value.reduce((sum, isSelected) => {
+        return isSelected ? sum + 1 : sum;
+      }, 0);
+    });
+
+    const deleteItem = async (itemId:String,userId:String) => {
+      const response = await axios.delete(`http://localhost:4001/diary-server/shoppingCart/deleteItem/${itemId}/${userId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+        },
+      });
+      if (response.status === 200) {
+        alert('删除成功');
+        await getCart();
+      }
+    };
+
+    const getAddress = async () => {
+      const userId = localStorage.getItem('userId');
+      const response = await axios.get(`http://localhost:4001/diary-server/address/getUserAddress/${userId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+    }});
+      if (response.status === 200) {
+        address.value = response.data.data;
+        console.log('address:',address.value);
+        
+      }
+    }
+
+    const pay = async () => {
+      updateItemIdList();
+      const response = await axios.post(`http://localhost:4001/diary-server/shoppingCart/pay`, {
+        'address': address.value[0],
+        'itemIdList': itemIdList.value,
+        'price': total.value,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+        },
+      });
+
+      if (response.status === 200) {
+        alert('下单成功');
+
+        for (let i = 0; i < selectedItems.value.length; i++) {
+          if (selectedItems.value[i]) {
+            await deleteItem(cartItems.value[i].itemId, cartItems.value[i].userId);
+          }
+        }
+
+        await getCart();
+      }
+      
+    }
+    const updateItemIdList = () => {
+      itemIdList.value = cartItems.value
+        .filter((_item, index) => selectedItems.value[index])
+        .map(item => item.itemId);
+    };
+
     onMounted(async () => {
       await getCart();
+      await getAddress();
     });
 
     return {
@@ -139,6 +227,10 @@ export default {
       selectedItems,
       checkAllSelected,
       all,
+      total,
+      selectNum,
+      deleteItem,
+      pay,
     };
   },
 };
@@ -202,5 +294,15 @@ export default {
     height: 150px;
     margin-top: 20px;
     background-color: white;
+}
+.fixed-div {
+  position: fixed;
+  bottom: 0px; /* 距离顶部10px */
+  width: 60%;
+  height: 50px;
+  background-color: rgb(231, 231, 231);
+  z-index: 1000; /* 设置较大的 z-index 值 */
+  display: flex;
+  flex-direction: row;
 }
 </style>

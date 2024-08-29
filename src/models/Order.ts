@@ -1,3 +1,5 @@
+import { OrderItem } from "./OrderItem";
+
 export class Order {
     orderId: string;
     orderNum: string;
@@ -7,6 +9,7 @@ export class Order {
     state: string;
     price: number;
     userId: string;
+    orderDetail?: OrderItem;
   
     constructor(
       orderId: string,
@@ -16,7 +19,8 @@ export class Order {
       price: number,
       userId: string,
       deliverTime?: Date,
-      receiptTime?: Date
+      receiptTime?: Date,
+      orderDetail?: OrderItem
     ) {
       this.orderId = orderId;
       this.orderNum = orderNum;
@@ -26,6 +30,7 @@ export class Order {
       this.state = state;
       this.price = price;
       this.userId = userId;
+      this.orderDetail = orderDetail;
     }
   
     static fromJson(json: { [key: string]: any }): Order {
