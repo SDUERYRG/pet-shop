@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="headup">
-      
+
     </div>
     <div class="headown">
       <div style="width: 30%;">
@@ -12,56 +12,53 @@
       <div style="width: 30%;display: flex;flex-direction: row;">
         <ElInput v-model="searchKey" placeholder="请输入搜索关键字" clearable />
         <ElButton type="primary" @click="searchUsers()">搜索</ElButton>
-        <ElButton type="success" @click="dialogVisible=true;showAddDialog()">添加</ElButton>
+        <ElButton type="success" @click="dialogVisible = true; showAddDialog()">添加</ElButton>
       </div>
     </div>
   </div>
   <div class="table-container">
     <ElTable :data="users" stripe="true" style="width: 100%">
       <ElTableColumn prop="userId" label="用户ID" width="80" />
-      <ElTableColumn prop="userName" label="名称" width="120" />
-      <ElTableColumn prop="account" label="账号" width="120" />
+      <ElTableColumn prop="userName" label="名称" width="200" />
+      <ElTableColumn prop="account" label="账号" width="180" />
       <ElTableColumn prop="power" label="权限" width="80" />
       <ElTableColumn prop="regTime" label="注册时间" width="180" />
-      <ElTableColumn prop="email" label="邮箱" width="200" />
+      <ElTableColumn prop="email" label="邮箱" width="280" />
       <ElTableColumn prop="sex" label="性别" width="70" />
-      <ElTableColumn prop="txPicture" label="头像图片名" width="120" />
+      <ElTableColumn prop="txPicture" label="头像图片名" width="200" />
       <ElTableColumn label="操作" width="180">
         <template #default="scope">
-          <ElButton type="primary" @click="dialogVisible=true;showEditDialog(scope.row)">修改</ElButton>
+          <ElButton type="primary" @click="dialogVisible = true; showEditDialog(scope.row)">修改</ElButton>
           <ElButton type="danger" @click="deleteUser(scope.row.userId)">删除</ElButton>
         </template>
       </ElTableColumn>
     </ElTable>
   </div>
 
-  <ElDialog @close="dialogVisible = false"
-            v-model="dialogVisible"
-            :title="dialogTitle"
-            width="500">
+  <ElDialog @close="dialogVisible = false" v-model="dialogVisible" :title="dialogTitle" width="500">
     <ElForm label-width="80px">
       <ElFormItem label="用户名">
-        <ElInput v-model="userName"/>
+        <ElInput v-model="userName" />
       </ElFormItem>
       <ElFormItem label="账号">
         <ElInput v-model="account" />
       </ElFormItem>
       <ElFormItem label="密码">
-        <ElInput v-model="password"/>
+        <ElInput v-model="password" />
       </ElFormItem>
       <ElFormItem label="权限">
-        <ElInput v-model="power"/>
+        <ElInput v-model="power" />
       </ElFormItem>
       <ElFormItem label="邮箱">
-        <ElInput v-model="email"/>
+        <ElInput v-model="email" />
       </ElFormItem>
       <ElFormItem label="性别">
-        <ElInput v-model="sex"/>
+        <ElInput v-model="sex" />
       </ElFormItem>
     </ElForm>
     <div style="display: flex; justify-content: center; padding: 10px;">
       <ElButton @click="dialogVisible = false">取消</ElButton>
-      <ElButton type="primary" @click="dialogVisible=false;handleConfirm()">确认</ElButton>
+      <ElButton type="primary" @click="dialogVisible = false; handleConfirm()">确认</ElButton>
     </div>
   </ElDialog>
 </template>
@@ -90,7 +87,7 @@ export default {
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:4001/diary-server/all/1/10');
+        const response = await axios.get('http://localhost:4001/diary-server/all/1/100');
         console.log('response:', response.data.data.records);
         users.value = response.data.data.records.map((userData: any) => new User(
           userData.userId,
@@ -152,7 +149,7 @@ export default {
 
     const searchUsers = async () => {
       try {
-        const response = await axios.get(`http://localhost:4001/diary-server/search/0/10`, {
+        const response = await axios.get(`http://localhost:4001/diary-server/search/0/100`, {
           params: {
             'keyword': searchKey.value,
           }
@@ -204,7 +201,7 @@ export default {
           power: power.value,
           email: email.value,
           sex: sex.value,
-          txPicture: 'photo'+(users.value.length + 1).toString()+'.jpg',
+          txPicture: 'photo' + (users.value.length + 1).toString() + '.jpg',
         });
         alert(response.data.message);
         fetchUsers();

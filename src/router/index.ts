@@ -35,10 +35,15 @@ const routes = [
     component: () => import("../components/UserOrder.vue"),
   },
   {
+    path: "/UserSort",
+    name: "UserSort",
+    component: () => import("../components/UserSort.vue")
+  },
+  {
     path: "/Home",
     name: "Home",
     component: () => import("../components/Home.vue"),
-    children:[
+    children: [
       {
         path: "",
         redirect: "/Home/User", // 当访问 /Home 时，重定向到 /Home/User
@@ -62,6 +67,11 @@ const routes = [
         path: "Order",
         name: "Order",
         component: () => import("../view/Order.vue"),
+      },
+      {
+        path: "Sort",
+        name: "Sort",
+        component: () => import("../view/Sort.vue")
       },
     ]
   }

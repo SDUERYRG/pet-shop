@@ -1,21 +1,21 @@
 <template>
     <div class="header">
-      <div class="headup">
-
-      </div>
-      <div class="headown">
-        <div style="width: 30%;">
-          <h4>购物车管理</h4>
-        </div>
-        <div style="width: 30%;">
+        <div class="headup">
 
         </div>
-        <div style="width: 40%;display: flex;flex-direction: row;">
-          <ElInput v-model="searchItem" placeholder="请输入商品名称" clearable />
-          <ElInput v-model="searchUser" placeholder="请输入用户名" clearable />
-          <ElButton type="primary" @click="preSearch()">搜索</ElButton>
+        <div class="headown">
+            <div style="width: 30%;">
+                <h4>购物车管理</h4>
+            </div>
+            <div style="width: 30%;">
+
+            </div>
+            <div style="width: 40%;display: flex;flex-direction: row;">
+                <ElInput v-model="searchItem" placeholder="请输入商品名称" clearable />
+                <ElInput v-model="searchUser" placeholder="请输入用户名" clearable />
+                <ElButton type="primary" @click="preSearch()">搜索</ElButton>
+            </div>
         </div>
-      </div>
     </div>
     <div>
         <ElTable :data="carts" stripe="true" style="width: 100%;">
@@ -41,14 +41,14 @@ export default {
         const searchItem = ref('');
         const searchUser = ref('');
         const fetchCarts = async () => {
-            try{
+            try {
                 // 从本地存储中获取 token
                 const token = localStorage.getItem('token');
 
                 if (!token) {
                     throw new Error('Token not found');
                 }
-                const response = await axios.get('http://localhost:4001/diary-server/shoppingCart/0/10', {
+                const response = await axios.get('http://localhost:4001/diary-server/shoppingCart/0/100', {
                     headers: {
                         'token': token,
                     }
@@ -70,7 +70,7 @@ export default {
         };
         const searchCartsByItem = async () => {
             try {
-                const response = await axios.get(`http://localhost:4001/diary-server/shoppingCart/searchByItem/0/10`,{
+                const response = await axios.get(`http://localhost:4001/diary-server/shoppingCart/searchByItem/0/100`, {
                     headers: {
                         'token': localStorage.getItem('token'),
                     },
@@ -89,13 +89,13 @@ export default {
                     cartData.price,
                 ));
                 console.log('搜索购物车信息成功:', carts);
-            }  catch (error) {
+            } catch (error) {
                 console.error('搜索购物车信息失败:', error);
             }
         };
         const searchCartsByUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:4001/diary-server/shoppingCart/searchByUser/0/10`,{
+                const response = await axios.get(`http://localhost:4001/diary-server/shoppingCart/searchByUser/0/100`, {
                     headers: {
                         'token': localStorage.getItem('token'),
                     },
@@ -114,22 +114,22 @@ export default {
                     cartData.price,
                 ));
                 console.log('搜索购物车信息成功:', carts);
-            }  catch (error) {
+            } catch (error) {
                 console.error('搜索购物车信息失败:', error);
             }
         };
         const preSearch = async () => {
-            if(searchItem.value=='' && searchUser.value==''){
+            if (searchItem.value == '' && searchUser.value == '') {
                 fetchCarts();
-            }else if(searchItem.value!=''){
+            } else if (searchItem.value != '') {
                 searchCartsByItem();
-            }else {
+            } else {
                 searchCartsByUser();
             }
         }
         onMounted(() => {
-        fetchCarts();
-    });
+            fetchCarts();
+        });
         return {
             carts,
             searchItem,
@@ -137,6 +137,6 @@ export default {
             preSearch,
         };
     },
-    
+
 }
 </script>
