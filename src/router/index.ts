@@ -40,6 +40,16 @@ const routes = [
     component: () => import("../components/UserSort.vue")
   },
   {
+    path: "/Register",
+    name: "Register",
+    component: () => import("../components/Register.vue")
+  },
+  {
+    path: "/UserRegister",
+    name: "UserRegister",
+    component: () => import("../components/UserRegister.vue")
+  },
+  {
     path: "/Home",
     name: "Home",
     component: () => import("../components/Home.vue"),

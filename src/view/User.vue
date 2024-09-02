@@ -1,21 +1,19 @@
 <template>
-  <div class="header">
-    <div class="headup">
 
+
+  <div class="headown">
+    <div style="width: 30%;">
+      <h4>用户管理</h4>
     </div>
-    <div class="headown">
-      <div style="width: 30%;">
-        <h4>用户管理</h4>
-      </div>
-      <div style="width: 40%;">
-      </div>
-      <div style="width: 30%;display: flex;flex-direction: row;">
-        <ElInput v-model="searchKey" placeholder="请输入搜索关键字" clearable />
-        <ElButton type="primary" @click="searchUsers()">搜索</ElButton>
-        <ElButton type="success" @click="dialogVisible = true; showAddDialog()">添加</ElButton>
-      </div>
+    <div style="width: 40%;">
+    </div>
+    <div style="width: 30%;display: flex;flex-direction: row;">
+      <ElInput v-model="searchKey" placeholder="请输入搜索关键字" clearable />
+      <ElButton type="primary" @click="searchUsers()">搜索</ElButton>
+      <ElButton type="success" @click="dialogVisible = true; showAddDialog()">添加</ElButton>
     </div>
   </div>
+
   <div class="table-container">
     <ElTable :data="users" stripe="true" style="width: 100%">
       <ElTableColumn prop="userId" label="用户ID" width="80" />

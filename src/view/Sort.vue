@@ -1,21 +1,18 @@
 <template>
     <!-- <router-view></router-view> -->
-    <div class="header">
-        <div class="headup">
+
+    <div class="headown">
+        <div style="width: 30%;">
+            <h4>分类</h4>
+        </div>
+        <div style="width: 60%;">
 
         </div>
-        <div class="headown">
-            <div style="width: 30%;">
-                <h4>分类</h4>
-            </div>
-            <div style="width: 60%;">
-
-            </div>
-            <div style="width: 10%;display: flex;flex-direction: row;">
-                <ElButton type="success" @click="showAddDialog(); dialogVisible = true">添加</ElButton>
-            </div>
+        <div style="width: 10%;display: flex;flex-direction: row;">
+            <ElButton type="success" @click="showAddDialog(); dialogVisible = true">添加</ElButton>
         </div>
     </div>
+
     <div>
         <ElTable :data="sorts" stripe="true" style="width: 100%">
             <ElTableColumn prop="sortId" label="分类Id" style="width: 20%;" />

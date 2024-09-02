@@ -1,20 +1,15 @@
 <template>
-    <div class="header">
-        <div class="headup">
+    <div class="headown">
+        <div style="width: 30%;">
+            <h4>购物车管理</h4>
+        </div>
+        <div style="width: 30%;">
 
         </div>
-        <div class="headown">
-            <div style="width: 30%;">
-                <h4>购物车管理</h4>
-            </div>
-            <div style="width: 30%;">
-
-            </div>
-            <div style="width: 40%;display: flex;flex-direction: row;">
-                <ElInput v-model="searchItem" placeholder="请输入商品名称" clearable />
-                <ElInput v-model="searchUser" placeholder="请输入用户名" clearable />
-                <ElButton type="primary" @click="preSearch()">搜索</ElButton>
-            </div>
+        <div style="width: 40%;display: flex;flex-direction: row;">
+            <ElInput v-model="searchItem" placeholder="请输入商品名称" clearable />
+            <ElInput v-model="searchUser" placeholder="请输入用户名" clearable />
+            <ElButton type="primary" @click="preSearch()">搜索</ElButton>
         </div>
     </div>
     <div>

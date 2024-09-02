@@ -4,6 +4,8 @@
       <ElInput class=loginInput v-model="account" placeholder="请输入账号" />
       <ElInput class=loginInput type=password v-model="password" placeholder="请输入密码" />
       <ElButton class=loginButton type="primary" @click="login()">登录</ElButton>
+      <ElButton style="margin-top: 10px;margin-left: 0px;" class=loginButton type="primary" @click="goToRegister()">去注册
+      </ElButton>
     </div>
   </div>
 </template>
@@ -48,11 +50,16 @@ export default {
       }
     };
 
+    const goToRegister = () => {
+      router.push("/Register");
+    }
+
 
     return {
       account,
       password,
-      login
+      login,
+      goToRegister
     };
   },
 }
